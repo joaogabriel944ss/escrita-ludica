@@ -62,7 +62,7 @@ return (
 <input ref={ emailRef } placeholder="Email" type="email" className="w-full px-3 py-2 border border-white rounded-md focus:outline-none text-white" />
 <input ref={ passwordRef } placeholder="Senha" type="password" className="w-full px-3 py-2 border border-white rounded-md focus:outline-none text-white" />
 
-<button className="w-full bg-blue-600 border border-white rounded-md text-white py-2 px-4 hover: cursor-pointer" >Login</button>
+<button className="w-full bg-blue-700 border border-white rounded-md text-white py-2 px-4 hover: cursor-pointer" >Login</button>
 
 </form>
 <Link to="/" className="text-white hover: cursor-poiter mt-4 block text-center">Não tem uma conta ? Cadastre-se</Link>

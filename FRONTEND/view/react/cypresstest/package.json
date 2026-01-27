@@ -9,8 +9,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-  "devDependencies": {
-    "cypress": "^15.9.0"
-  }
+  "type": "commonjs"
 }

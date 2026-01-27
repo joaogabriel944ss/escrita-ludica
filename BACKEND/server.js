@@ -20,7 +20,7 @@ const app = express()
 const allowedOrigins = [
     'http://localhost:5173', // Vite padrão
     'http://localhost:3000',
-    'https://seu-projeto-frontend.vercel.app' // Troque pela URL real após o deploy
+    'https://escrita-ludica-lfix.onrender.com' // Troque pela URL real após o deploy
 ]
 
 app.use(cors({

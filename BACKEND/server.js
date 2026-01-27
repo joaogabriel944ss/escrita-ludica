@@ -39,14 +39,7 @@ app.use(cors({
 // --- MIDDLEWARES GERAIS ---
 app.use(express.json())
 
-// --- GARANTIR QUE A PASTA UPLOADS EXISTE ---
-const uploadPath = path.join(__dirname, 'uploads')
-if (!fs.existsSync(uploadPath)) {
-    fs.mkdirSync(uploadPath, { recursive: true })
-}
 
-// --- SERVIR ARQUIVOS ESTÁTICOS ---
-app.use('/uploads', express.static(uploadPath))
 
 // --- ROTAS ---
 app.use('/', publicRoutes)
@@ -57,5 +50,5 @@ const PORT = process.env.PORT || 3000
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Servidor rodando na porta ${PORT}`);
-    console.log(`📂 Pasta de uploads: ${uploadPath}`);
+    
 });

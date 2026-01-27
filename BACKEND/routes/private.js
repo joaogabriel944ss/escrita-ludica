@@ -1,23 +1,9 @@
 import express from 'express'
 import { PrismaClient } from '@prisma/client'
-import multer from 'multer'
-import path from 'path'
-import fs from 'fs'
+import { uploadCloud } from '../config/cloudinary.js' 
 
 const router = express.Router()
 const prisma = new PrismaClient()
-
-const uploadDir = './uploads/'
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir)
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-})
-
-const upload = multer({ storage })
 
 // --- CATEGORIAS ---
 router.get('/categorias', async (req, res) => {
@@ -39,9 +25,9 @@ router.post('/categorias', async (req, res) => {
     }
 })
 
-// --- LIVROS (PROTEGIDOS POR USUÁRIO) ---
+// --- LIVROS (USANDO CLOUDINARY) ---
 
-router.post('/livros', upload.single('capa'), async (req, res) => {
+router.post('/livros', uploadCloud.single('capa'), async (req, res) => {
     try {
         const { titulo, descricao, categoryId } = req.body 
         
@@ -49,14 +35,15 @@ router.post('/livros', upload.single('capa'), async (req, res) => {
             data: {
                 titulo,
                 descricao,
-                capa: req.file ? req.file.filename : null,
-                userId: req.userID, // Usa o ID vindo do token
+                // req.file.path agora contém a URL (https://res.cloudinary.com/...)
+                capa: req.file ? req.file.path : null,
+                userId: req.userID, 
                 categoryId: categoryId 
             }
         })
         res.status(201).json(novoLivro)
     } catch (err) {
-        console.error("ERRO NO PRISMA:", err)
+        console.error("ERRO AO CRIAR LIVRO:", err)
         res.status(500).json({ message: "Erro ao criar livro", error: err.message })
     }
 })
@@ -66,7 +53,7 @@ router.get('/livros', async (req, res) => {
     try {
         const livros = await prisma.book.findMany({
             where: {
-                userId: req.userID // <-- O FILTRO MÁGICO AQUI
+                userId: req.userID 
             },
             include: { 
                 category: true
@@ -75,31 +62,26 @@ router.get('/livros', async (req, res) => {
         
         res.status(200).json({ listaDeLivros: livros || [] })
     } catch (err) {
-        console.error("Erro no Prisma:", err) 
         res.status(500).json({ message: "Erro ao buscar livros", error: err.message })
     }
 })
 
-router.put('/livros/:id', upload.single('capa'), async (req, res) => {
+router.put('/livros/:id', uploadCloud.single('capa'), async (req, res) => {
     try {
         const { id } = req.params
         const { titulo, descricao, categoryId } = req.body
         
-        // Verifica se o livro existe E se pertence ao usuário
         const livroExistente = await prisma.book.findFirst({ 
             where: { id, userId: req.userID } 
         })
         
-        if (!livroExistente) return res.status(404).json({ message: "Livro não encontrado ou sem permissão" })
+        if (!livroExistente) return res.status(404).json({ message: "Livro não encontrado" })
 
         let dadosParaAtualizar = { titulo, descricao, categoryId }
 
         if (req.file) {
-            dadosParaAtualizar.capa = req.file.filename
-            if (livroExistente.capa) {
-                const antigaPath = path.join(uploadDir, livroExistente.capa)
-                if (fs.existsSync(antigaPath)) fs.unlinkSync(antigaPath)
-            }
+            // Se enviou foto nova, salvamos a nova URL da nuvem
+            dadosParaAtualizar.capa = req.file.path
         }
 
         const livroAtualizado = await prisma.book.update({
@@ -116,19 +98,15 @@ router.delete('/livros/:id', async (req, res) => {
     try {
         const { id } = req.params
         
-        // Só busca o livro se ele for do usuário logado
         const livro = await prisma.book.findFirst({ 
             where: { id, userId: req.userID } 
         })
         
-        if (!livro) return res.status(404).json({ message: "Livro não encontrado ou permissão negada" })
+        if (!livro) return res.status(404).json({ message: "Livro não encontrado" })
 
         await prisma.book.delete({ where: { id } })
         
-        if (livro.capa) {
-            const filePath = path.join(uploadDir, livro.capa)
-            if (fs.existsSync(filePath)) fs.unlinkSync(filePath)
-        }
+     
         res.status(200).json({ message: "Deletado com sucesso" })
     } catch (err) {
         res.status(500).json({ message: "Erro ao deletar" })

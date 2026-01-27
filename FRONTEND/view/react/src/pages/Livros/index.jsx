@@ -192,7 +192,7 @@ function logout() {
                                 {/* Imagem Maior */}
                                 <div className="h-60 bg-slate-800 rounded-2xl mb-4 overflow-hidden relative">
                                     {livro.capa ? (
-                                        <img src={`http://localhost:3000/uploads/${livro.capa}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                        <img src={`{livro.capa}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                     ) : (
                                         <div className="flex items-center justify-center h-full text-white/20">Sem Capa</div>
                                     )}

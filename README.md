@@ -79,6 +79,10 @@ PORT=3001
 # Caso use MongoDB ou outro banco:
 DATABASE_URL=seu_link_de_conexao
 
+
+## testes☣️
+Tudo foi testado com Cypress🧪
+
 👤 Autor
 João Gabriel
 

@@ -83,6 +83,9 @@ DATABASE_URL=seu_link_de_conexao
 ## testes☣️
 Tudo foi testado com Cypress🧪
 
+Metodologia Ágil KanBan:
+https://miro.com/app/board/uXjVGWbRRB4=/?share_link_id=412812254637
+
 👤 Autor
 João Gabriel
 

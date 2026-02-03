@@ -3,7 +3,7 @@
 O **Escrita Lúdica** é uma plataforma interativa desenhada para quebrar o bloqueio criativo, unindo uma interface minimalista no React com um servidor robusto em Node.js.
 
 ## 🔗 Link do Projeto (Deploy)
-🚀 [Acesse a aplicação aqui]([INSIRA_O_LINK_AQUI](https://escrita-ludica-lfix.onrender.com/))
+🚀 [Acesse a aplicação aqui](https://escrita-ludica-lfix.onrender.com/login)
 
 ---
 
